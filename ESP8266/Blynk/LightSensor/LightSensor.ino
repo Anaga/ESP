@@ -1,7 +1,6 @@
 #define BLYNK_PRINT Serial
 
-#include <Wire.h>
-#include <BH1750.h>
+#include <BH1750FVI.h>
 #include <ESP8266WiFi.h>
 #include <BlynkSimpleEsp8266.h>
 #include "credentials.h"
@@ -11,7 +10,40 @@ char auth[] = BLYNK_AUTH_TOKEN;
 char ssid[] = WIFI_SSID;
 char pass[] = WIFI_PASSWD;
 
-BH1750 lightMeter;
+BH1750FVI LightSensor(BH1750FVI::k_DevModeContLowRes);
+/*
+  Connecting the sensor to a NodeMCU ESP8266:
+  VCC  <-> 3V3
+  GND  <-> GND
+  SDA  <-> D2
+  SCL  <-> D1
+*/  
+
+
+ /*************************************************************
+  App project setup:
+    1 sec timet on V1 - get LightSensor Data from BH1750: SCL  <-> D1, SDA  <-> D2
+    Time Input widget on V2.
+
+  slider input on V5 - PWM on D5 in WeMos
+    
+ *************************************************************/
+ 
+BlynkTimer timer;
+
+// This function sends Arduino's up time every second to Virtual Pin (1).
+// In the app, Widget's reading frequency should be set to PUSH. This means
+// that you define how often to send data to Blynk App.
+void myTimerEvent()
+{
+  // You can send any value at any time.
+  // Please don't send more that 10 values per second.
+  uint16_t lux = LightSensor.GetLightIntensity();
+  Serial.print("Light: ");
+  Serial.print(lux);
+  Serial.println(" lx");
+  Blynk.virtualWrite(V1,lux );
+}
 
 void setup() {
   // Debug console
@@ -20,12 +52,9 @@ void setup() {
   Serial.begin(9600);
   Blynk.begin(auth, ssid, pass);
 
-    // Initialize the I2C bus (BH1750 library doesn't do this automatically)
-  // On esp8266 devices you can select SCL and SDA pins using Wire.begin(D4, D3);
-  Wire.begin();
-
-  lightMeter.begin();
-  Serial.println(F("BH1750 Test"));
+  LightSensor.begin();  
+  Serial.println(F("BH1750 Test")); 
+  timer.setInterval(1000L, myTimerEvent);
 }
 
 BLYNK_WRITE(V5) {
@@ -40,6 +69,19 @@ BLYNK_WRITE(V5) {
   Blynk.virtualWrite(V0, pinValue); 
 }
 
+BLYNK_WRITE(V2) {
+  TimeInputParam t(param);
+  Serial.println(String("Start: ") +
+                   t.getStartHour() + ":" +
+                   t.getStartMinute() + ":" +
+                   t.getStartSecond());
+  Serial.print("V2 timer value is: ");
+  long startTimeInSecs = param[0].asLong();
+  Serial.println(startTimeInSecs);
+  Serial.println(String("Time zone: ") + t.getTZ());
+  Serial.println();
+}
 void loop() {
   Blynk.run();
+  timer.run();
 }
