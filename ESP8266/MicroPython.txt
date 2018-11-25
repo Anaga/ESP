@@ -1,0 +1,14 @@
+ESP 8266 MicroPython
+
+Detecting chip type... ESP8266
+Chip is ESP8266EX
+Features: WiFi
+MAC: b4:e6:2d:53:b3:e6
+
+
+clear flash:
+C:\Python\Scripts\esptool.py.exe --port COM7 erase_flash
+
+upload MicroPython
+esptool.py --port /dev/ttyUSB0 --baud 460800 write_flash --flash_size=detect 0 esp8266-20170108-v1.8.7.bin
+C:\Python\Scripts\esptool.py.exe --port COM7 --baud 460800 write_flash --flash_size=detect 0 esp8266-20180511-v1.9.4.bin
