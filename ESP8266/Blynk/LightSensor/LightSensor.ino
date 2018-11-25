@@ -4,7 +4,8 @@
 #include <ESP8266WiFi.h>
 #include <BlynkSimpleEsp8266.h>
 #include "credentials.h"
-
+#include <TimeLib.h>
+#include <WidgetRTC.h>
 
 char auth[] = BLYNK_AUTH_TOKEN;
 char ssid[] = WIFI_SSID;
@@ -28,8 +29,12 @@ BH1750FVI LightSensor(BH1750FVI::k_DevModeContLowRes);
   slider input on V5 - PWM on D5 in WeMos
     
  *************************************************************/
+
+
+WidgetRTC rtc;
  
 BlynkTimer timer;
+BlynkTimer timer10sec;
 
 // This function sends Arduino's up time every second to Virtual Pin (1).
 // In the app, Widget's reading frequency should be set to PUSH. This means
@@ -45,6 +50,30 @@ void myTimerEvent()
   Blynk.virtualWrite(V1,lux );
 }
 
+void clockDisplay()
+{
+  // You can call hour(), minute(), ... at any time
+  // Please see Time library examples for details
+
+  String currentTime = String(hour()) + ":" + minute() + ":" + second();
+  String currentDate = String(day()) + " " + month() + " " + year();
+  Serial.print("Current time: ");
+  Serial.print(currentTime);
+  Serial.print(" ");
+  Serial.print(currentDate);
+  Serial.println();
+
+  // Send time to the App
+  Blynk.virtualWrite(V4, currentTime);
+
+}
+
+BLYNK_CONNECTED() {
+  // Synchronize time on connection
+  rtc.begin();
+
+}
+
 void setup() {
   // Debug console
   pinMode(LED_BUILTIN, OUTPUT);
@@ -55,6 +84,10 @@ void setup() {
   LightSensor.begin();  
   Serial.println(F("BH1750 Test")); 
   timer.setInterval(1000L, myTimerEvent);
+
+  setSyncInterval(1 * 60); // Sync interval in seconds (10 minutes)
+  // Display digital clock every 10 seconds
+  timer10sec.setInterval(1000L, clockDisplay);
 }
 
 BLYNK_WRITE(V5) {
@@ -81,6 +114,7 @@ BLYNK_WRITE(V2) {
   Serial.println(String("Time zone: ") + t.getTZ());
   Serial.println();
 }
+
 void loop() {
   Blynk.run();
   timer.run();
