@@ -45,3 +45,4 @@ target_wrapper.*
 # QtCreator CMake
 CMakeLists.txt.user*
 ESP8266/Blynk/LightSensor/credentials.h
+ESP8266/Blynk/LightSensor/credentials.h
