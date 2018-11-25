@@ -9,6 +9,9 @@
 *.dll
 *.dylib
 
+# Blynk and ESP creds
+credentials.h
+
 # Qt-es
 object_script.*.Release
 object_script.*.Debug

@@ -5,7 +5,13 @@ Chip is ESP8266EX
 Features: WiFi
 MAC: b4:e6:2d:53:b3:e6
 
+Connecting....
+Detecting chip type... ESP8266
+Chip is ESP8266EX
+Features: WiFi
+MAC: b4:e6:2d:4a:32:26
 
+cd C:\Users\aleks\Documents\GitHub\ESP\ESP8266
 clear flash:
 C:\Python\Scripts\esptool.py.exe --port COM7 erase_flash
 
