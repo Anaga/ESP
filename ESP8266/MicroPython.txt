@@ -14,7 +14,31 @@ MAC: b4:e6:2d:4a:32:26
 cd C:\Users\aleks\Documents\GitHub\ESP\ESP8266
 clear flash:
 C:\Python\Scripts\esptool.py.exe --port COM7 erase_flash
+C:\Python\Scripts\esptool.py.exe --port COM13 erase_flash
 
 upload MicroPython
 esptool.py --port /dev/ttyUSB0 --baud 460800 write_flash --flash_size=detect 0 esp8266-20170108-v1.8.7.bin
 C:\Python\Scripts\esptool.py.exe --port COM7 --baud 460800 write_flash --flash_size=detect 0 esp8266-20180511-v1.9.4.bin
+C:\Python\Scripts\esptool.py.exe --port COM13 --baud 460800 write_flash --flash_size=detect 0 esp8266-20180511-v1.9.4.bin
+                                                                                             esp8266-20180511-v1.9.4.bin
+C:\Python\Scripts\esptool.py.exe --port COM13 --baud 460800 write_flash --flash_size=detect -fm dio 0 esp8266-20180511-v1.9.4.bin
+C:\Python\Scripts\esptool.py.exe --port COM7 read_mac
+C:\Python\Scripts\esptool.py.exe --port COM7 chip_id
+C:\Python\Scripts\esptool.py.exe --port COM7 flash_id
+C:\Python\Scripts\esptool.py.exe --port COM7 read_flash_status
+
+
+    read_mac            Read MAC address from OTP ROM
+    chip_id             Read Chip ID from OTP ROM
+    flash_id            Read SPI flash manufacturer and device ID
+    read_flash_status   Read SPI flash status register
+    
+12:22:53.218 ->   File "inisetup.py", line 9, in wifi
+12:22:53.218 -> OSError: can't set AP config
+12:22:53.218 -> OSError: [Errno 1] EPERM
+
+import network
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+wlan.connect('TP-LINK-123', 'adminAdmin')
+    

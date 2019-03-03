@@ -1,0 +1,5 @@
+C:\Python\Scripts\esptool.py.exe --port COM13 --baud 460800 write_flash --flash_size=detect -fm dio 0 esp8266-20180511-v1.9.4.bin
+C:\Python\Scripts\esptool.py.exe --port COM7 read_mac
+C:\Python\Scripts\esptool.py.exe --port COM7 chip_id
+C:\Python\Scripts\esptool.py.exe --port COM7 flash_id
+C:\Python\Scripts\esptool.py.exe --port COM7 read_flash_statu

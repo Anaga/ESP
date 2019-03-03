@@ -1,0 +1,70 @@
+ESP 32 MicroPython
+
+
+cd C:\Users\aleks\Documents\GitHub\ESP\ESP32
+
+Get info:
+C:\Python\Scripts\esptool.py.exe --port COM5 read_mac
+esptool.py v2.5.1
+Serial port COM5
+Connecting....
+Detecting chip type... ESP32
+Chip is ESP32D0WDQ6 (revision 1)
+Features: WiFi, BT, Dual Core, 240MHz, VRef calibration in efuse
+MAC: 3c:71:bf:03:49:9c
+Uploading stub...
+Running stub...
+Stub running...
+MAC: 3c:71:bf:03:49:9c
+Hard resetting via RTS pin...
+
+Clear flash:
+C:\Python\Scripts\esptool.py.exe --port COM5 erase_flash
+
+
+upload MicroPython
+C:\Python\Scripts\esptool.py.exe --chip esp32 --port COM5 --baud 115200 write_flash -z 0x1000 esp32-20190125-v1.10.bin
+
+C:\Python\Scripts\esptool.py.exe --port COM5 --baud 115200 write_flash --flash_size=detect 0 esp32-20190125-v1.10.bin
+
+esptool.py --chip esp32 --port /dev/ttyUSB0 write_flash -z 0x1000 esp32-20180511-v1.9.4.bin
+                               --baud 115200
+esptool.py --port /dev/ttyUSB0 --baud 460800 write_flash --flash_size=detect 0 esp8266-20170108-v1.8.7.bin
+
+    read_mac            Read MAC address from OTP ROM
+    chip_id             Read Chip ID from OTP ROM
+    flash_id            Read SPI flash manufacturer and device ID
+    read_flash_status   Read SPI flash status register
+
+C:\Python\Scripts\esptool.py.exe --port COM5 read_flash_status
+
+
+
+    
+12:22:53.218 ->   File "inisetup.py", line 9, in wifi
+12:22:53.218 -> OSError: can't set AP config
+12:22:53.218 -> OSError: [Errno 1] EPERM
+
+import network
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+wlan.connect('TP-LINK-123', 'adminAdmin')
+
+SERVER = "192.168.10.180"
+PORT = 1883
+USER = b"testesp8266"
+PASSWORD = b"xxxxxxx"
+CLIENT_ID = ubinascii.hexlify(machine.unique_id())
+TOPIC = b"test/led"
+
+.....
+
+def main(server=SERVER, port=PORT, user=USER, password=PASSWORD):
+    c = MQTTClient(CLIENT_ID, server, port, user, password)
+    # Subscribed messages will be delivered to this callback
+    c.set_callback(sub_cb)
+    c.connect()
+    c.subscribe(TOPIC)
+    print("Connected to %s, subscribed to %s topic" % (server, TOPIC))
+    
+    
